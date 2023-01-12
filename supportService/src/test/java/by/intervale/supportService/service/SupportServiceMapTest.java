@@ -79,7 +79,6 @@ class SupportServiceMapTest {
         //when
         supportService.processRequest(supportRequest);
         //then
-//        Mockito.verify(adviser, Mockito.times(1)).help(Mockito.any());
         Mockito.verify(technic, Mockito.times(0)).help(Mockito.any());
         Mockito.verify(editor, Mockito.times(0)).help(Mockito.any());
     }
