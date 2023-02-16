@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-request-queue
+      author: Kseniya
+      changes:
+        - insert:
+            tableName: request_info
+            columns:
+              - column:
+                  name: uuid
+                  value: e0b5c06b-632c-4143-98a1-60f4328ea249
+              - column:
+                  name: request
+                  value: "request_1"
+        - insert:
+            tableName: request_info
+            columns:
+              - column:
+                  name: uuid
+                  value: e9097b16-be2e-4b40-92fe-213479b698ed
+              - column:
+                  name: request
+                  value: "request_2"

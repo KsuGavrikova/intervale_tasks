@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-response-queue
+      author: Kseniya
+      changes:
+        - createTable:
+            tableName: response
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: uuid_request
+                  type: uuid
+              - column:
+                  name: accrued_sum
+                  type: bigint
+              - column:
+                  name: pay_sum
+                  type: bigint
+              - column:
+                  name: resolution_number
+                  type: int
+              - column:
+                  name: sts_inn
+                  type: varchar(255)
+              - column:
+                  name: resolution_date
+                  type: date
+              - column:
+                  name: article_koap
+                  type: varchar(255)

@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-request-queue
+      author: Kseniya
+      changes:
+        - createTable:
+            tableName: request_info
+            columns:
+              - column:
+                  name: uuid
+                  type: uuid
+                  autoIncrement: false
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: request
+                  type: varchar(255)

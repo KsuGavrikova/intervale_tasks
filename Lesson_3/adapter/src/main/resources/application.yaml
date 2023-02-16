@@ -1,0 +1,8 @@
+server:
+  port: 8075
+responseColl:
+  uri: "http://localhost:8074/smev/check"
+  maxAttempts: 3
+  delayAttempts: 100
+someRestCall:
+  uri: "http://localhost:8074/smev/request"
