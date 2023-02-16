@@ -20,14 +20,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/smev/")
 public class SmevRequestController {
     public final SmevService smevService;
-
+    
     @PostMapping("request")
-    public String requestFiz() {
-        log.warn("hello from adapter");
-        return "kkkkkk";
-    }
-
-    @PostMapping("request-info")
     public String requestInfo(@RequestBody RequestInfo requestInfo) {
         log.info("method requestInfo get request " + requestInfo);
         smevService.addRequestToQueue(requestInfo);
@@ -40,7 +34,7 @@ public class SmevRequestController {
         smevService.workWithWorker();
     }
 
-    @GetMapping("response-is-ready")
+    @GetMapping("check")
     public Response getResponse(@RequestBody RequestInfo requestInfo) {
         log.info("method getResponse get request " + requestInfo);
         return smevService.getResponse(requestInfo);
