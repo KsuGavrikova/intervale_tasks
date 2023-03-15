@@ -1,7 +1,7 @@
 package by.intervale.adapter.mapper;
 
-import by.intervale.adapter.model.RequestInfo;
-import by.intervale.adapter.model.RequestUr;
+import by.intervale.adapter.model.request.RequestInfo;
+import by.intervale.adapter.model.request.RequestUr;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;

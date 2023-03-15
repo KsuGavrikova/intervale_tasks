@@ -1,16 +1,16 @@
-package by.intervale.adapter.model;
+package by.intervale.adapter.model.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
 @Component
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class RequestInfo {
     UUID uuid;
     String request;

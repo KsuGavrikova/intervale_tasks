@@ -1,8 +1,12 @@
 package by.intervale.adapter.controller;
 
-import by.intervale.adapter.model.RequestFiz;
-import by.intervale.adapter.model.RequestUr;
-import by.intervale.adapter.service.MyService;
+import by.intervale.adapter.mapper.RequestFizToRequestInfo;
+import by.intervale.adapter.mapper.RequestUrToRequestInfo;
+import by.intervale.adapter.model.Response;
+import by.intervale.adapter.model.request.RequestFiz;
+import by.intervale.adapter.model.request.RequestInfo;
+import by.intervale.adapter.model.request.RequestUr;
+import by.intervale.adapter.service.DistributionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,25 +16,33 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/adapter/")
 public class RequestController {
 
-    private final MyService myService;
+    private final DistributionService myService;
 
-    // a.	Получить запрос на штраф от партнера
     @PostMapping("request-fiz")
-    public ResponseEntity<HttpStatus> requestFiz(@RequestBody RequestFiz requestFiz) {
-        log.info(myService.fizRestCall(requestFiz));
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Response> requestFiz(@Valid @RequestBody RequestFiz requestFiz) {
+        log.info("request-fiz get request" + requestFiz);
+        var requestFizToRequestInfo = new RequestFizToRequestInfo();
+        RequestInfo requestInfo = requestFizToRequestInfo.map(requestFiz);
+        Response response = myService.requestToSMEV(requestInfo);
+        log.info("request-fiz transmits response " + "");
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
     @PostMapping("request-ur")
-    public String requestUr(@RequestBody RequestUr requestUr) {
-        return myService.urRestCall(requestUr);
+    public ResponseEntity<Response> requestUr(@Valid @RequestBody RequestUr requestUr) {
+        log.info("request-ur get request" + requestUr);
+        var requestUrToRequestInfo = new RequestUrToRequestInfo();
+        RequestInfo requestInfo = requestUrToRequestInfo.map(requestUr);
+        Response response = myService.requestToSMEV(requestInfo);
+        log.info("request-ur transmits response " + "");
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
-
-
 }
