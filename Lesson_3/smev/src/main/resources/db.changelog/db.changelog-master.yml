@@ -6,4 +6,6 @@ databaseChangeLog:
   - include:
       file: db.changelog/changeset/create-gisgmp-table.yaml
   - include:
+      file: db.changelog/changeset/insert-response-gisgmp.yaml
+  - include:
       file: db.changelog/changeset/create-response-queue-table.yaml

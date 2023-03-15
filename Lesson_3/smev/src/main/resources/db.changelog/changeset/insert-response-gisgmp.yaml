@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-response-gisgmp
+      author: Kseniya
+      changes:
+        - insert:
+            tableName: response_gisgmp
+            columns:
+              - column:
+                  name: id
+                  value: e0b5c06b-632c-4143-98a1-60f4328ea249
+              - column:
+                  name: accrued_sum
+                  value: 111111
+              - column:
+                  name: pay_sum
+                  value: 222222
+              - column:
+                  name: resolution_number
+                  value: 3
+              - column:
+                  name: sts_inn
+                  value: "request_1"
+              - column:
+                  name: resolution_date
+                  value: "2021-02-21"
+              - column:
+                  name: article_koap
+                  type: "request_1"
+        - insert:
+            tableName: response_gisgmp
+            columns:
+              - column:
+                  name: id
+                  value: e9097b16-be2e-4b40-92fe-213479b698ed
+              - column:
+                  name: accrued_sum
+                  value: 44444444
+              - column:
+                  name: pay_sum
+                  value: 55555555
+              - column:
+                  name: resolution_number
+                  value: 6
+              - column:
+                  name: sts_inn
+                  value: "request_2"
+              - column:
+                  name: resolution_date
+                  value: "2023-01-30"
+              - column:
+                  name: article_koap
+                  type: "request_2"
