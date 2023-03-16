@@ -18,10 +18,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Response {
     @Id
-    Long id;
+    UUID id;
 
-    @Column(name = "uuid_request")
-    UUID uuidRequest;
+//    @Column(name = "uuid_request")
+//    UUID uuidRequest;
 
     @Column(name = "accrued_sum")
     Long accruedSum;

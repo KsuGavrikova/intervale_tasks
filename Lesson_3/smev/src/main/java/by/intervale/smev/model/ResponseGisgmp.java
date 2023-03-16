@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDate;
+import java.util.UUID;
 
 
 @Entity
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 @ToString
 public class ResponseGisgmp {
     @Id
-    Long id;
+    UUID id;
 
     @Column(name = "accrued_sum")
     Long accruedSum;

@@ -6,58 +6,89 @@ import by.intervale.smev.model.ResponseGisgmp;
 import by.intervale.smev.repository.GisgmpRepository;
 import by.intervale.smev.repository.RequestInfoRepository;
 import by.intervale.smev.repository.ResponseRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import javax.annotation.PostConstruct;
 import java.util.List;
-
-/**
- * c.	Реализовать Worker который будет запускаться в отдельном потоке и эмулировать взаимодействие с ГИСГМП
- * i.	Вычитывать сообщения из персистентной очереди запросов на получение информации
- * ii.	Эмулировать взаимодействие с ГИСГМП
- * iii.	Помещать ответ в персистентную очередь ответов
- * iv.	Удалять запрос из очереди запросов
- **/
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 @Service
-@AllArgsConstructor
-public class Worker {
+@RequiredArgsConstructor
+public class Worker implements Runnable {
     private final RequestInfoRepository requestInfoRepository;
     private final GisgmpRepository gisgmpRepository;
     private final ResponseRepository responseRepository;
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private boolean startThread = true;
 
-    public List<RequestInfo> getRequestFromQueue() {
+    @PostConstruct
+    public void start() {
+        log.info("Worker started");
+        executorService.submit(new Worker(requestInfoRepository, gisgmpRepository, responseRepository));
+    }
+
+    @Override
+    public void run() {
+        while (startThread) {
+            log.info("Subtracts from a persistent chain of connections to get information");
+            List<RequestInfo> messageList = getRequestFromQueue();
+
+            for (RequestInfo requestFromQueue : messageList) {
+                log.info("get request " + requestFromQueue);
+
+                log.info("Emulate interaction with GISMP");
+                ResponseGisgmp gimpResponse = emulator(requestFromQueue);
+
+                log.info("Push response to persistent response queue");
+                responseToQueue(mapResponseGisgmpToResponse(requestFromQueue, gimpResponse));
+
+                log.info("Remove a request from the request queue");
+                deleteRequestFromQueue(requestFromQueue);
+            }
+
+            try {
+                Thread.currentThread().join(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private Response mapResponseGisgmpToResponse(RequestInfo requestFromQueue, ResponseGisgmp gimpResponse) {
+        return new Response(
+                requestFromQueue.getUuid(),
+                gimpResponse.getAccruedSum(),
+                gimpResponse.getPaySum(),
+                gimpResponse.getResolutionNumber(),
+                gimpResponse.getStsInn(),
+                gimpResponse.getResolutionDate(),
+                gimpResponse.getArticleKoAP()
+        );
+    }
+
+    private List<RequestInfo> getRequestFromQueue() {
         return requestInfoRepository.findAll();
     }
 
-    public void emulator(List<RequestInfo> list) {
-        for (RequestInfo r : list) {
-            log.info("get request " + r);
-//            ResponseGisgmp gimpResponse = gisgmpRepository.getById(1L);
-
-            gisgmpRepository.save(new ResponseGisgmp(1L, 2222L, 2222L, 333,
-                    r.getRequest(), LocalDate.now(), "kmlhbjn"));
-            ResponseGisgmp gimpResponse = gisgmpRepository.getByStsInn(r.getRequest()).orElse(new ResponseGisgmp());
-            log.info("get gimpResponse " + gimpResponse);
-
-            log.info("get gimpResponse ");
-            Response response = new Response(
-                    1L,
-                    r.getUuid(),
-                    gimpResponse.getAccruedSum(),
-                    gimpResponse.getPaySum(),
-                    gimpResponse.getResolutionNumber(),
-                    gimpResponse.getStsInn(),
-                    gimpResponse.getResolutionDate(),
-                    gimpResponse.getArticleKoAP()
-            );
-            responseRepository.save(response);
-            log.info("save response " + response);
-            responseRepository.delete(response);
-            log.info("delete response " + response);
-        }
+    public ResponseGisgmp emulator(RequestInfo requestFromQueue) {
+        ResponseGisgmp gimpResponse = gisgmpRepository.getByStsInn(requestFromQueue.getRequest()).orElse(new ResponseGisgmp());
+        log.info("get gimpResponse " + gimpResponse);
+        return gimpResponse;
     }
+
+    private void responseToQueue(Response response) {
+        responseRepository.save(response);
+        log.info("save response " + response);
+    }
+
+    private void deleteRequestFromQueue(RequestInfo requestFromQueue) {
+        requestInfoRepository.delete(requestFromQueue);
+        log.info("delete request " + requestFromQueue);
+    }
+
 }

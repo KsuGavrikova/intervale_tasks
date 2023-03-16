@@ -13,9 +13,9 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
                     nullable: false
-              - column:
-                  name: uuid_request
-                  type: uuid
+#              - column:
+#                  name: uuid_request
+#                  type: uuid
               - column:
                   name: accrued_sum
                   type: bigint

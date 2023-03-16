@@ -2,47 +2,37 @@ package by.intervale.smev.controller;
 
 import by.intervale.smev.model.RequestInfo;
 import by.intervale.smev.model.Response;
-import by.intervale.smev.service.SmevService;
-import lombok.AllArgsConstructor;
+import by.intervale.smev.service.SmevInterrupter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * a.	Принять запрос на получение информации
- * b.	Сохранить запрос в персистентную очередь(табл. В БД)
- * d.	Отдать ответ по запросу за ответом
- * e.	Удалить ответ из очереди при получении запроса подтверждения(Acknowledge)
- **/
+import java.util.UUID;
 
 @Slf4j
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/smev/")
 public class SmevRequestController {
-    public final SmevService smevService;
-    
+    public final SmevInterrupter smevService;
+
     @PostMapping("request")
-    public String requestInfo(@RequestBody RequestInfo requestInfo) {
-        log.info("method requestInfo get request " + requestInfo);
+    public UUID requestInfo(@RequestBody RequestInfo requestInfo) {
+        log.info("method requestInfo post request " + requestInfo);
         smevService.addRequestToQueue(requestInfo);
-        return requestInfo.getRequest() + " request add to queue";
+        return requestInfo.getUuid();
+//        return requestInfo.getRequest() + " request add to queue";
     }
 
-    @GetMapping("worker")
-    public void workerTest() {
-        log.info("hello from workerTest");
-        smevService.workWithWorker();
-    }
-
-    @GetMapping("check")
+    @PostMapping("check")
     public Response getResponse(@RequestBody RequestInfo requestInfo) {
         log.info("method getResponse get request " + requestInfo);
         return smevService.getResponse(requestInfo);
     }
 
     @DeleteMapping("response-delete")
-    public void deleteRequestInfo(@RequestBody RequestInfo requestInfo) {
-        log.info("method deleteResponse get request " + requestInfo);
-        smevService.delete(requestInfo);
+    public void deleteRequestInfo(@RequestBody UUID uuidResponse) {
+        log.info("method deleteResponse get uuid Response " + uuidResponse);
+        smevService.deleteResponse(uuidResponse);
     }
 }
